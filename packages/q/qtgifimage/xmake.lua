@@ -1,0 +1,17 @@
+package("qtgifimage")
+  set_urls("https://github.com/jiangcaiyang/QtGifImage.git")
+
+  on_install("macos", "linux", function (package)
+    io.writefile("xmake.lua", [[
+        add_rules("mode.debug", "mode.release")
+        add_requires("qt5base")
+        add_includedirs("src/3rdParty/giflib")
+        target("qtgifimage")
+            add_rules("qt.static")
+            add_files("src/gifimage/*.cpp", "src/3rdParty/giflib/*.c")
+            add_headerfiles("src/gifimage/*.h")
+            add_packages("qt5base")
+            add_frameworks("QtGui")
+    ]])
+    import("package.tools.xmake").install(package)
+end)
