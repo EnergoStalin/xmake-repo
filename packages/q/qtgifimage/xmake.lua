@@ -1,7 +1,7 @@
 package("qtgifimage")
   set_urls("https://github.com/jiangcaiyang/QtGifImage.git")
 
-  on_install("macos", "linux", function (package)
+  on_install("macosx", "linux", function (package)
     io.writefile("xmake.lua", [[
         add_rules("mode.debug", "mode.release")
         add_requires("qt5base")
