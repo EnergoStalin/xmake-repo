@@ -1,4 +1,1 @@
-include(
-  'common.lua',
-  'cpp.lua',
-)
+includes('common.lua', 'cpp.lua')
