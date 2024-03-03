@@ -1,0 +1,6 @@
+rule('c')
+  add_deps('clike')
+  on_config(function(target)
+    target:set_languages('c11')
+  end)
+rule_end()
