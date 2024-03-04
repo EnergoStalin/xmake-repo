@@ -1,7 +1,7 @@
 rule('clike')
   add_deps('mode.release', 'mode.debug', 'mode.tsan', 'mode.asan')
   on_config(function(target)
-    target:set('cflags', '-Wall', '-Werror', '-Wextra', '-pedantic')
+    target:set('warnings', 'allextra', 'error', 'pedantic')
     target:set('toolchains', 'gcc')
 
     target:set('prefixname', 's21_')
