@@ -3,6 +3,8 @@ rule('clike')
   on_config(function(target)
     target:set('cflags', '-Wall', '-Werror', '-Wextra', '-pedantic')
     target:set('toolchains', 'gcc')
+
+    target:set('prefixname', 's21_')
   end)
 rule_end()
 
