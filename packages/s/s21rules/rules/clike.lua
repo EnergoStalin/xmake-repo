@@ -31,6 +31,13 @@ rule('cxxlib')
   add_deps('cxx', 'mode.coverage')
   on_config(function(target)
     target:set('kind', 'static')
+
+    if is_mode('coverage') then
+      target:add("cxflags", "-fprofile-arcs -ftest-coverage")
+      target:add("mxflags", "-fprofile-arcs -ftest-coverage")
+      target:add("ldflags", "-fprofile-arcs -ftest-coverage")
+      target:add("shflags", "-fprofile-arcs -ftest-coverage")
+    end
   end)
 rule_end()
 
@@ -57,5 +64,12 @@ rule('clib')
   add_deps('c', 'mode.coverage')
   on_config(function(target)
     target:set('kind', 'static')
+
+    if is_mode('coverage') then
+      target:add("cxflags", "-fprofile-arcs -ftest-coverage")
+      target:add("mxflags", "-fprofile-arcs -ftest-coverage")
+      target:add("ldflags", "-fprofile-arcs -ftest-coverage")
+      target:add("shflags", "-fprofile-arcs -ftest-coverage")
+    end
   end)
 rule_end()
