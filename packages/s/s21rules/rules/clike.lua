@@ -20,6 +20,10 @@ rule('cxxtest')
   on_config(function(target)
     target:set('kind', 'binary')
     target:add('packages', 'gtest')
+
+    if is_mode('coverage') then
+      target:add('ldflags', '--coverage')
+    end
   end)
 rule_end()
 
@@ -42,6 +46,10 @@ rule('ctest')
   on_config(function(target)
     target:add('packages', 'check')
     target:set('kind', 'binary')
+
+    if is_mode('coverage') then
+      target:add('ldflags', '--coverage')
+    end
   end)
 rule_end()
 
