@@ -8,14 +8,23 @@ package('qcustomplot')
 
   on_install(function(package)
     io.writefile('xmake.lua', [[
-      add_rules('mode.debug', 'mode.release')
-      set_languages('cxx17')
+      set_languages('cxx11')
+
+      add_requires('qt5base', 'qt5gui')
+
       target('qcustomplot')
-        set_kind('static')
+        set_kind('shared')
+        add_rules('qt.shared')
 
-        add_files('qcustomplot.cpp')
-        add_rules('qt.static')
+        add_defines('QCUSTOMPLOT_COMPILE_LIBRARY')
+        add_frameworks('QtPrintSupport')
+        add_packages('qt5base', 'qt5gui')
 
+        add_files(
+          'qcustomplot.cpp',
+          'qcustomplot.h'
+        )
+        
         add_headerfiles('qcustomplot.h', { public = true })
         add_includedirs('.', { public = true })
     ]])
