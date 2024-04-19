@@ -6,8 +6,8 @@ package('qcustomplot')
 
   add_versions('2.1.1', '5e2d22dec779db8f01f357cbdb25e54fbcf971adaee75eae8d7ad2444487182f')
 
-  add_patches('1.15',
-    'patches/qcustomplot.h.diff',
+  add_patches('2.1.1',
+    'patches/2.1.1/qcustomplot.h.diff',
     'dcd8226f2787b51de8555c03b3ac9a3e3ba63066f52d31f955336d81ba5d3dfb'
   )
 
