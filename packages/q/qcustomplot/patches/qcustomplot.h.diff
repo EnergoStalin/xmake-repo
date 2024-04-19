@@ -1,0 +1,15 @@
+diff --git a/qcustomplot.h b/qcustomplot.h
+index 02ed8fb..104d99f 100644
+--- a/qcustomplot.h
++++ b/qcustomplot.h
+@@ -134,6 +134,10 @@ class QCPPolarGraph;
+ #define QCUSTOMPLOT_VERSION_STR "2.1.1"
+ #define QCUSTOMPLOT_VERSION 0x020101
+ 
++#ifndef QCUSTOMPLOT_COMPILE_LIBRARY
++#  define QCUSTOMPLOT_USE_LIBRARY
++#endif
++
+ // decl definitions for shared library compilation/usage:
+ #if defined(QT_STATIC_BUILD)
+ #  define QCP_LIB_DECL
