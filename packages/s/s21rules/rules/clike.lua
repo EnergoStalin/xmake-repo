@@ -18,7 +18,6 @@ rule_end()
 rule('cxxtest')
   add_deps('cxx', 'mode.valgrind')
   on_config(function(target)
-    target:set('kind', 'binary')
     target:add('packages', 'gtest')
 
     if is_mode('coverage') then
@@ -30,9 +29,8 @@ rule_end()
 rule('cxxlib')
   add_deps('cxx', 'mode.coverage')
   on_config(function(target)
-    target:set('kind', 'static')
-
     if is_mode('coverage') then
+      -- Somehow --coverage is not sufficient for generating .gcno files
       target:add("cxflags", "-fprofile-arcs -ftest-coverage")
       target:add("mxflags", "-fprofile-arcs -ftest-coverage")
       target:add("ldflags", "-fprofile-arcs -ftest-coverage")
@@ -52,7 +50,6 @@ rule('ctest')
   add_deps('c', 'mode.valgrind')
   on_config(function(target)
     target:add('packages', 'check')
-    target:set('kind', 'binary')
 
     if is_mode('coverage') then
       target:add('ldflags', '--coverage')
@@ -63,9 +60,8 @@ rule_end()
 rule('clib')
   add_deps('c', 'mode.coverage')
   on_config(function(target)
-    target:set('kind', 'static')
-
     if is_mode('coverage') then
+      -- Somehow --coverage is not sufficient for generating .gcno files
       target:add("cxflags", "-fprofile-arcs -ftest-coverage")
       target:add("mxflags", "-fprofile-arcs -ftest-coverage")
       target:add("ldflags", "-fprofile-arcs -ftest-coverage")
