@@ -1,4 +1,4 @@
-rule('lib_report')
+rule('libreport')
   after_run(function(target)
     for k, v in pairs(target._DEPS) do
       os.execv('lcov', {
