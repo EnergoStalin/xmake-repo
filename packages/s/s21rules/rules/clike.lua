@@ -1,16 +1,3 @@
-rule('coverage')
-  add_deps('mode.coverage')
-  on_config(function(target)
-    if is_mode('coverage') then
-      -- Somehow --coverage is not sufficient for generating .gcno files
-      target:add("cxflags", "-fprofile-arcs -ftest-coverage")
-      target:add("mxflags", "-fprofile-arcs -ftest-coverage")
-      target:add("ldflags", "-fprofile-arcs -ftest-coverage")
-      target:add("shflags", "-fprofile-arcs -ftest-coverage")
-    end
-  end)
-rule_end()
-
 rule('clike')
   add_deps('mode.release', 'mode.debug', 'mode.tsan', 'mode.asan')
   on_config(function(target)
@@ -40,7 +27,16 @@ rule('cxxtest')
 rule_end()
 
 rule('cxxlib')
-  add_deps('cxx', 'coverage')
+  add_deps('cxx', 'mode.coverage')
+  on_config(function(target)
+    if is_mode('coverage') then
+      -- Somehow --coverage is not sufficient for generating .gcno files
+      target:add("cxflags", "-fprofile-arcs -ftest-coverage")
+      target:add("mxflags", "-fprofile-arcs -ftest-coverage")
+      target:add("ldflags", "-fprofile-arcs -ftest-coverage")
+      target:add("shflags", "-fprofile-arcs -ftest-coverage")
+    end
+  end)
 rule_end()
 
 rule('c')
@@ -62,5 +58,14 @@ rule('ctest')
 rule_end()
 
 rule('clib')
-  add_deps('c', 'coverage')
+  add_deps('c', 'mode.coverage')
+  on_config(function(target)
+    if is_mode('coverage') then
+      -- Somehow --coverage is not sufficient for generating .gcno files
+      target:add("cxflags", "-fprofile-arcs -ftest-coverage")
+      target:add("mxflags", "-fprofile-arcs -ftest-coverage")
+      target:add("ldflags", "-fprofile-arcs -ftest-coverage")
+      target:add("shflags", "-fprofile-arcs -ftest-coverage")
+    end
+  end)
 rule_end()
