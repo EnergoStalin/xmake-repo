@@ -6,6 +6,12 @@ rule('libreport')
         '-c', '-d', v:objectdir(),
       })
     end
+
+    os.execv('genhtml', {
+      '-exclude', '/usr/*',
+      '-o', path.join(target._INFO._INTERPRETER:rootdir(), 'report'),
+      path.join(target:targetdir(), '*.info')
+    })
   end)
 rule_end()
 
