@@ -1,3 +1,16 @@
+rule('coverage')
+  add_deps('mode.coverage')
+  on_config(function(target)
+    if is_mode('coverage') then
+      -- Somehow --coverage is not sufficient for generating .gcno files
+      target:add("cxflags", "-fprofile-arcs -ftest-coverage")
+      target:add("mxflags", "-fprofile-arcs -ftest-coverage")
+      target:add("ldflags", "-fprofile-arcs -ftest-coverage")
+      target:add("shflags", "-fprofile-arcs -ftest-coverage")
+    end
+  end)
+rule_end()
+
 rule('clike')
   add_deps('mode.release', 'mode.debug', 'mode.tsan', 'mode.asan')
   on_config(function(target)
@@ -16,7 +29,7 @@ rule('cxx')
 rule_end()
 
 rule('cxxtest')
-  add_deps('cxx', 'mode.valgrind')
+  add_deps('cxx')
   on_config(function(target)
     target:add('packages', 'gtest')
 
@@ -27,16 +40,7 @@ rule('cxxtest')
 rule_end()
 
 rule('cxxlib')
-  add_deps('cxx', 'mode.coverage')
-  on_config(function(target)
-    if is_mode('coverage') then
-      -- Somehow --coverage is not sufficient for generating .gcno files
-      target:add("cxflags", "-fprofile-arcs -ftest-coverage")
-      target:add("mxflags", "-fprofile-arcs -ftest-coverage")
-      target:add("ldflags", "-fprofile-arcs -ftest-coverage")
-      target:add("shflags", "-fprofile-arcs -ftest-coverage")
-    end
-  end)
+  add_deps('cxx', 'coverage')
 rule_end()
 
 rule('c')
@@ -47,7 +51,7 @@ rule('c')
 rule_end()
 
 rule('ctest')
-  add_deps('c', 'mode.valgrind')
+  add_deps('c')
   on_config(function(target)
     target:add('packages', 'check')
 
@@ -58,14 +62,5 @@ rule('ctest')
 rule_end()
 
 rule('clib')
-  add_deps('c', 'mode.coverage')
-  on_config(function(target)
-    if is_mode('coverage') then
-      -- Somehow --coverage is not sufficient for generating .gcno files
-      target:add("cxflags", "-fprofile-arcs -ftest-coverage")
-      target:add("mxflags", "-fprofile-arcs -ftest-coverage")
-      target:add("ldflags", "-fprofile-arcs -ftest-coverage")
-      target:add("shflags", "-fprofile-arcs -ftest-coverage")
-    end
-  end)
+  add_deps('c', 'coverage')
 rule_end()
