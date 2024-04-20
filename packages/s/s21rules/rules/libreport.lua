@@ -7,10 +7,12 @@ rule('libreport')
       })
     end
 
-    os.execv('genhtml', {
-      '-exclude', '/usr/*',
-      '-o', path.join(target._INFO._INTERPRETER:rootdir(), 'report'),
-      path.join(target:targetdir(), '*.info')
+    os.execv('sh', {
+      '-c',
+      'genhtml -exclude /usr/* -o '
+      .. path.join(target._INFO._INTERPRETER:rootdir(), 'report')
+      .. ' '
+      .. path.join(target:targetdir(), '*.info')
     })
   end)
 rule_end()
