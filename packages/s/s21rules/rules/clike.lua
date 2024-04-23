@@ -15,6 +15,7 @@ local function c(target)
 end
 
 rule('cxxtest')
+  add_deps('mode.coverage', 'mode.release', 'mode.debug')
   on_config(function(target)
     cxx(target)
     target:add('packages', 'gtest')
@@ -26,7 +27,7 @@ rule('cxxtest')
 rule_end()
 
 rule('cxxlib')
-  add_deps('mode.coverage')
+  add_deps('mode.coverage', 'mode.release', 'mode.debug')
   on_config(function(target)
     cxx(target)
     if is_mode('coverage') then
@@ -40,6 +41,7 @@ rule('cxxlib')
 rule_end()
 
 rule('ctest')
+  add_deps('mode.coverage', 'mode.release', 'mode.debug')
   on_config(function(target)
     c(target)
     target:add('packages', 'check')
@@ -51,7 +53,7 @@ rule('ctest')
 rule_end()
 
 rule('clib')
-  add_deps('mode.coverage')
+  add_deps('mode.coverage', 'mode.release', 'mode.debug')
   on_config(function(target)
     c(target)
     if is_mode('coverage') then
