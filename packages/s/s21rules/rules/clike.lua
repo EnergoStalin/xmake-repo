@@ -6,7 +6,6 @@ end
 local function cxx(target)
      clike(target)
      target:set('languages', 'cxx17')
-     target:set('toolchains', 'clang')
 end
 
 local function c(target)
