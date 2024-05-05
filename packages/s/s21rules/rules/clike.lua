@@ -64,3 +64,13 @@ rule('clib')
     end
   end)
 rule_end()
+
+rule('c')
+  add_deps('mode.release', 'mode.debug')
+  on_config(c)
+rule_end()
+
+rule('cxx')
+  add_deps('mode.release', 'mode.debug')
+  on_config(cxx)
+rule_end()
