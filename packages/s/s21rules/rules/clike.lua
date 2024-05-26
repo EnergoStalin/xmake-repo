@@ -19,6 +19,10 @@ rule('cxxtest')
     cxx(target)
     target:add('packages', 'gtest')
 
+    if is_mode('debug') then
+      target:add('cxxflags', '-Wno-unused-variable')
+    end
+
     if is_mode('coverage') then
       target:add('ldflags', '--coverage')
     end
@@ -44,6 +48,11 @@ rule('ctest')
   on_config(function(target)
     c(target)
     target:add('packages', 'check')
+
+
+    if is_mode('debug') then
+      target:add('cflags', '-Wno-unused-variable')
+    end
 
     if is_mode('coverage') then
       target:add('ldflags', '--coverage')
