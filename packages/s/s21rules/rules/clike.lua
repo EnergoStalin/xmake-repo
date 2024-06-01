@@ -1,3 +1,27 @@
+-- run target
+local function _do_run_target(target, os, runenvs, debugger, option)
+  -- only for binary program
+  if not target:is_binary() then
+    return
+  end
+
+  -- get the run directory of target
+  local rundir = target:rundir()
+  -- get the absolute target file path
+  local targetfile = path.absolute(target:targetfile())
+  -- get the run environments
+  local addenvs, setenvs = runenvs.make(target)
+  -- get run arguments
+  local args = table.wrap(option.get("arguments") or target:get("runargs"))
+
+  -- debugging?
+  if option.get("debug") then
+    debugger.run(targetfile, args, { curdir = rundir, addenvs = addenvs, setenvs = setenvs })
+  else
+    os.execv(targetfile, args, { curdir = rundir, detach = option.get("detach"), addenvs = addenvs, setenvs = setenvs })
+  end
+end
+
 local function clike(target)
     target:set('warnings', 'allextra', 'error', 'pedantic')
     target:set('toolchains', 'gcc')
@@ -14,7 +38,16 @@ local function c(target)
 end
 
 local function memcheck(target)
-  if not is_mode('valgrind') then return end
+  import("private.action.run.runenvs")
+  import("core.base.option")
+  import("devel.debugger")
+
+  if not is_mode('valgrind') then
+    _do_run_target(target, os, runenvs, debugger, option)
+    return
+  end
+
+  local targetfile = path.absolute(target:targetfile())
 
   os.execv('valgrind', {
     '--leak-check=full',
@@ -22,7 +55,7 @@ local function memcheck(target)
     '--track-origins=yes',
     '--verbose',
     '--',
-    path.join(target:targetdir(), target:name())
+    targetfile
   })
 end
 
