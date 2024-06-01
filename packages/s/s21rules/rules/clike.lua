@@ -32,7 +32,7 @@ rule('cxxtest')
   on_config(function(target)
     cxx(target)
     target:add('packages', 'gtest')
-    target:add('group', 'test')
+    target:set('group', 'test')
 
     if is_mode('debug') then
       target:add('cxxflags', '-Wno-unused-variable')
@@ -48,7 +48,7 @@ rule('cxxlib')
   add_deps('mode.coverage', 'mode.release', 'mode.debug')
   on_config(function(target)
     cxx(target)
-    target:add('group', 'lib')
+    target:set('group', 'lib')
 
     if is_mode('coverage') then
       -- Somehow --coverage is not sufficient for generating .gcno files
@@ -66,7 +66,7 @@ rule('ctest')
   on_config(function(target)
     c(target)
     target:add('packages', 'check')
-    target:add('group', 'test')
+    target:set('group', 'test')
 
     if is_mode('debug') then
       target:add('cflags', '-Wno-unused-variable')
