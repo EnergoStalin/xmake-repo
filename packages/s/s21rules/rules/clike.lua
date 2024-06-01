@@ -17,7 +17,12 @@ local function memcheck(target)
   if not is_mode('valgrind') then return end
 
   os.execv('valgrind', {
-    '--', path.join(target:targetdir(), target:name())
+    '--leak-check=full',
+    '--show-leak-kinds=all',
+    '--track-origins=yes',
+    '--verbose',
+    '--',
+    path.join(target:targetdir(), target:name())
   })
 end
 
