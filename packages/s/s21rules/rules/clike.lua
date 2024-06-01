@@ -1,25 +1,57 @@
--- run target
-local function _do_run_target(target, os, runenvs, debugger, option)
-  -- only for binary program
+local function _concat_args(a1, a2)
+  for _, value in pairs(a2) do
+    table.insert(a1, value)
+  end
+end
+
+local function _on_run(target)
   if not target:is_binary() then
     return
   end
 
-  -- get the run directory of target
+  import("private.action.run.runenvs")
+  import("core.base.option")
+  import("devel.debugger")
+
   local rundir = target:rundir()
-  -- get the absolute target file path
   local targetfile = path.absolute(target:targetfile())
-  -- get the run environments
   local addenvs, setenvs = runenvs.make(target)
-  -- get run arguments
   local args = table.wrap(option.get("arguments") or target:get("runargs"))
 
-  -- debugging?
-  if option.get("debug") then
-    debugger.run(targetfile, args, { curdir = rundir, addenvs = addenvs, setenvs = setenvs })
-  else
-    os.execv(targetfile, args, { curdir = rundir, detach = option.get("detach"), addenvs = addenvs, setenvs = setenvs })
+  local exec = {
+    curdir = rundir,
+    addenvs = addenvs,
+    setenvs = setenvs
+  }
+
+  if option.get('detach') then
+    exec.detach = option.get('detach')
   end
+
+  if not is_mode('valgrind') then
+    if option.get('debug') then
+      debugger.run(targetfile, args, exec)
+    else
+      os.execv(targetfile, vargs, exec)
+    end
+    return
+  end
+
+  local vargs = {}
+
+  if option.get('verbose') then
+    _concat_args(vargs, {
+      '--leak-check=full',
+      '--show-leak-kinds=all',
+      '--track-origins=yes',
+      '--verbose',
+    })
+  end
+
+  _concat_args(vargs, { '--', targetfile })
+  _concat_args(vargs, args)
+
+  os.execv('valgrind', vargs, exec)
 end
 
 local function clike(target)
@@ -37,31 +69,10 @@ local function c(target)
     target:set('languages', 'c11')
 end
 
-local function memcheck(target)
-  import("private.action.run.runenvs")
-  import("core.base.option")
-  import("devel.debugger")
-
-  if not is_mode('valgrind') then
-    _do_run_target(target, os, runenvs, debugger, option)
-    return
-  end
-
-  local targetfile = path.absolute(target:targetfile())
-
-  os.execv('valgrind', {
-    '--leak-check=full',
-    '--show-leak-kinds=all',
-    '--track-origins=yes',
-    '--verbose',
-    '--',
-    targetfile
-  })
-end
 
 rule('cxxtest')
   add_deps('mode.coverage', 'mode.release', 'mode.debug', 'mode.valgrind')
-  on_run(memcheck)
+  on_run(_on_run)
   on_config(function(target)
     cxx(target)
     target:add('packages', 'gtest')
@@ -95,7 +106,7 @@ rule_end()
 
 rule('ctest')
   add_deps('mode.coverage', 'mode.release', 'mode.debug', 'mode.valgrind')
-  on_run(memcheck)
+  on_run(_on_run)
   on_config(function(target)
     c(target)
     target:add('packages', 'check')
