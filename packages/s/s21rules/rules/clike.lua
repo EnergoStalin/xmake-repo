@@ -13,8 +13,17 @@ local function c(target)
     target:set('languages', 'c11')
 end
 
+local function memcheck(target)
+  if not is_mode('valgrind') then return end
+
+  os.execv('valgrind', {
+    '--', path.join(target:targetdir(), target:name())
+  })
+end
+
 rule('cxxtest')
-  add_deps('mode.coverage', 'mode.release', 'mode.debug')
+  add_deps('mode.coverage', 'mode.release', 'mode.debug', 'mode.valgrind')
+  on_run(memcheck)
   on_config(function(target)
     cxx(target)
     target:add('packages', 'gtest')
@@ -44,7 +53,8 @@ rule('cxxlib')
 rule_end()
 
 rule('ctest')
-  add_deps('mode.coverage', 'mode.release', 'mode.debug')
+  add_deps('mode.coverage', 'mode.release', 'mode.debug', 'mode.valgrind')
+  on_run(memcheck)
   on_config(function(target)
     c(target)
     target:add('packages', 'check')
