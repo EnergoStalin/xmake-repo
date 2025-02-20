@@ -12,6 +12,8 @@ package('qcustomplot')
     'dcd8226f2787b51de8555c03b3ac9a3e3ba63066f52d31f955336d81ba5d3dfb'
   )
 
+  add_deps('qtbased')
+
   on_install(function(package)
     io.writefile('xmake.lua', [[
       add_rules('mode.debug', 'mode.release')
