@@ -1,7 +1,9 @@
-package('qt6based')
+package('qtbased')
   set_kind('phony')
   set_base('qtbase')
 
+  add_versions('5.12.2', 'dummy')
+  add_versions('5.15.16', 'dummy')
   add_versions('6.3.0', 'dummy')
   add_versions('6.3.1', 'dummy')
   add_versions('6.3.2', 'dummy')
