@@ -12,19 +12,15 @@ package('qcustomplot')
     'dcd8226f2787b51de8555c03b3ac9a3e3ba63066f52d31f955336d81ba5d3dfb'
   )
 
-  add_configs('cxxver', {description = 'C++ standard to use for qt > 6 specify > 17', default = 17, type = 'number', readonly = false})
-
   on_install(function(package)
-    io.writefile('xmake.lua', string.format([[
+    io.writefile('xmake.lua', [[
       add_rules('mode.debug', 'mode.release')
-      set_languages('cxx%s')
 
       target('qcustomplot')
         set_kind('$(kind)')
         add_rules('qt.$(kind)')
 
         add_defines('QCUSTOMPLOT_COMPILE_LIBRARY')
-        add_frameworks('QtPrintSupport')
 
         add_files(
           'qcustomplot.cpp',
@@ -33,6 +29,6 @@ package('qcustomplot')
         
         add_headerfiles('qcustomplot.h', { public = true })
         add_includedirs('.', { public = true })
-    ]], package:config('cxxver')))
+    ]])
     import('package.tools.xmake').install(package)
   end)
