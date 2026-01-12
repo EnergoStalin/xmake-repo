@@ -1,0 +1,7 @@
+rule('cxx')
+  on_config(function(target)
+    target:set('warnings', 'allextra', 'error', 'pedantic')
+    target:set('toolchains', 'gcc')
+    target:set('languages', 'cxx17')
+  end)
+rule_end()

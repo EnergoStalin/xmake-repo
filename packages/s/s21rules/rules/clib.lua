@@ -1,10 +1,7 @@
 rule('clib')
-  add_deps('mode.coverage', 'mode.release', 'mode.debug')
-  on_config(function(target)
-    target:set('warnings', 'allextra', 'error', 'pedantic')
-    target:set('toolchains', 'gcc')
-    target:set('languages', 'c11')
-
+  add_deps('@s21rules/c', 'mode.coverage')
+  add_orders('@s21rules/c', '@s21rules/clib')
+  on_config(function (target)
     if is_mode('coverage') then
       target:add("cxflags", "-fprofile-arcs -ftest-coverage")
       target:add("mxflags", "-fprofile-arcs -ftest-coverage")
@@ -13,3 +10,4 @@ rule('clib')
     end
   end)
 rule_end()
+
