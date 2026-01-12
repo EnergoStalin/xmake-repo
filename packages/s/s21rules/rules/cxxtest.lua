@@ -4,60 +4,32 @@ local function _concat_args(a1, a2)
   end
 end
 
-local function _on_run(target)
-  if not target:is_binary() then
-    return
-  end
-
-  import("private.action.run.runenvs")
-  import("core.base.option")
-  import("devel.debugger")
-
-  local rundir = target:rundir()
-  local targetfile = path.absolute(target:targetfile())
-  local addenvs, setenvs = runenvs.make(target)
-
-  local args = table.wrap(option.get("arguments") or target:get("runargs"))
-
-  local exec = {
-    curdir = rundir,
-    addenvs = addenvs,
-    setenvs = setenvs
-  }
-
-  if option.get('detach') then
-    exec.detach = option.get('detach')
-  end
-
-  if not is_mode('valgrind') then
-    if option.get('debug') then
-      debugger.run(targetfile, args, exec)
-    else
-      os.execv(targetfile, vargs, exec)
-    end
-    return
-  end
-
-  local vargs = {}
-
-  if option.get('verbose') then
-    _concat_args(vargs, {
-      '--leak-check=full',
-      '--show-leak-kinds=all',
-      '--track-origins=yes',
-      '--verbose',
-    })
-  end
-
-  _concat_args(vargs, { '--', targetfile })
-  _concat_args(vargs, args)
-
-  os.execv('valgrind', vargs, exec)
-end
-
 rule('cxxtest')
   add_deps('mode.coverage', 'mode.release', 'mode.debug', 'mode.valgrind')
-  on_run(_on_run)
+  after_build(function (target)
+    if not is_mode('valgrind') then return end
+
+    import('core.base.option')
+
+    local vargs = {}
+
+    if option.get('verbose') then
+      _concat_args(vargs, {
+        '--leak-check=full',
+        '--show-leak-kinds=all',
+        '--track-origins=yes',
+        '--verbose',
+      })
+    end
+
+    _concat_args(vargs, { '--', path.join(os:projectdir(), target:targetfile()) })
+
+    target:set('runargs', vargs)
+    target.targetfile = function ()
+      import('lib.detect.find_tool')
+      return find_tool('valgrind').program
+    end
+  end)
   on_config(function(target)
     target:set('warnings', 'allextra', 'error', 'pedantic')
     target:set('toolchains', 'gcc')
