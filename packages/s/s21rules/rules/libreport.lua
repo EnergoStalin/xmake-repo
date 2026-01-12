@@ -11,10 +11,11 @@ rule('libreport')
 
     os.execv('sh', {
       '-c',
-      'genhtml --ignore-errors unused -exclude \'/usr/*\' -o '
-      .. path.join(os.projectdir(), 'report')
-      .. ' '
-      .. path.join(target:targetdir(), '*.info')
+      string.format([[%s '%s' '%s']],
+        [[genhtml --ignore-errors unused -exclude '/usr/*' -o]],
+        path.join(os.projectdir(), 'report'),
+        path.join(target:targetdir(), '*.info')
+      )
     })
   end)
 rule_end()
