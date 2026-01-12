@@ -12,7 +12,7 @@ package('qcustomplot')
     'dcd8226f2787b51de8555c03b3ac9a3e3ba63066f52d31f955336d81ba5d3dfb'
   )
 
-  add_deps('qtbased')
+  add_deps('qtbased 6.4.0')
 
   on_install(function(package)
     io.writefile('xmake.lua', [[
