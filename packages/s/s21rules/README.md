@@ -1,3 +1,7 @@
+# Homepage
+
+- https://platform.21-school.ru/
+
 # Example
 
 ## C
