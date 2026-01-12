@@ -47,6 +47,8 @@ target_end()
 <details>
   <summary>Test</summary>
 
+Usually get imported from subdirectory therefore does not have own repository declaration.
+
 ```lua
 set_project('vect-test')
 
